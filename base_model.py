@@ -12,28 +12,28 @@ class base_model(object):
         args (an object): contains the arguments used for initalizing the model.
         """
         self.embedding_size = args.embedding_size
-        self.learning_rate = args.learning_rate
-        self.batch_size = args.batch_size
-        self.neg_samp = args.neg_samp
-        self.model_file = args.model_file
+        self.learning_rate  = args.learning_rate
+        self.batch_size     = args.batch_size
+        self.neg_samp       = args.neg_samp
+        self.model_file     = args.model_file
         
         self.window_size = args.window_size
-        self.path_size = args.path_size
+        self.path_size   = args.path_size
         
-        self.g_batch_size = args.g_batch_size
+        self.g_batch_size    = args.g_batch_size
         self.g_learning_rate = args.g_learning_rate
-        self.g_sample_size = args.g_sample_size
+        self.g_sample_size   = args.g_sample_size
 
         self.use_feature = args.use_feature
-        self.update_emb = args.update_emb
-        self.layer_loss = args.layer_loss
+        self.update_emb  = args.update_emb
+        self.layer_loss  = args.layer_loss
 
         lasagne.random.set_rng(np.random)
         np.random.seed(13)
 
         random.seed(13)
 
-        self.inst_generator = self.gen_train_inst()
+        self.inst_generator  = self.gen_train_inst()
         self.graph_generator = self.gen_graph()
         self.label_generator = self.gen_label_graph()
 
