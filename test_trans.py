@@ -66,7 +66,7 @@ while True:
     # compute the accuracy on the dev set
     accu = comp_accu(tpy, ty)
 
-    print iter_cnt, accu, max_accu
+    print "Step : %d, %f, %f" % (iter_cnt, accu, max_accu)
     iter_cnt += 1
 
     if accu > max_accu:
