@@ -1,0 +1,54 @@
+{
+    "transductive": {
+        "learning_rate": 0.1,
+        "embedding_size": 50,
+        "window_size": 3,
+        "path_size": 10,
+        "batch_size": 200,
+        "g_batch_size": 200,
+        "g_sample_size": 100,
+        "neg_samp": 0,
+        "g_learning_rate": 1e-2,
+        "model_file": "trans.model",
+        "use_feature": true,
+        "update_emb": true,
+        "layer_loss": true,
+
+        "init_train": {
+            "iter_label": 2000,
+            "iter_graph": 70
+        },
+        "step_train": {
+            "max_iter": 1,
+            "iter_graph": 0,
+            "iter_inst": 1,
+            "iter_label": 0
+        }
+    },
+    "inductive": {
+        "learning_rate": 0.1,
+        "embedding_size": 50,
+        "window_size": 3,
+        "path_size": 10,
+        "batch_size": 200,
+        "g_batch_size": 20,
+        "g_sample_size": 20,
+        "neg_samp": 0,
+        "g_learning_rate": 1e-3,
+        "model_file": "ind.model",
+        "use_feature": true,
+        "update_emb": true,
+        "layer_loss": true,
+
+        "init_train": {
+            "iter_label": 10000,
+            "iter_graph": 400
+        },
+        "step_train": {
+            "max_iter": 1,
+            "iter_graph": 0.1,
+            "iter_inst": 1,
+            "iter_label": 0
+        }
+    }
+}

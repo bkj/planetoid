@@ -38,7 +38,7 @@ args = parse_args()
 
 objs = []
 for nm in ['x', 'y', 'tx', 'ty', 'graph']:
-    name = "data/trans.{}.{}".format(args.dataset, nm)
+    fname = "data/trans.{}.{}".format(args.dataset, nm)
     obj = cPickle.load(open(fname))
     objs.append(obj)
 
@@ -46,6 +46,8 @@ x, y, tx, ty, graph = tuple(objs)
 
 # --
 # Define model
+
+print args
 
 m = model(args)
 m.add_data(x, y, graph)                                 # add data
