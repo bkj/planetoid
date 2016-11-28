@@ -6,10 +6,9 @@ from scipy import sparse as sp
 
 from trans_model import trans_model as model
 
-DATASET = 'citeseer'
-
 def parse_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--dataset',         help='dataset', type=str, default='citeseer')
     parser.add_argument('--learning_rate',   help='learning rate for supervised loss', type=float, default=0.1)
     parser.add_argument('--embedding_size',  help='embedding dimensions', type=int, default=50)
     parser.add_argument('--window_size',     help='window size in random walk sequences', type=int, default=3)
@@ -30,20 +29,23 @@ def comp_accu(tpy, ty):
     act = np.argmax(ty, axis=1)
     return (pred == act).sum() * 1.0 / tpy.shape[0]
 
+
+args = parse_args()
+
+
 # --
 # IO
 
-NAMES = ['x', 'y', 'tx', 'ty', 'graph']
-OBJECTS = []
-for i in range(len(NAMES)):
-    OBJECTS.append(cPickle.load(open("data/trans.{}.{}".format(DATASET, NAMES[i]))))
+objs = []
+for nm in ['x', 'y', 'tx', 'ty', 'graph']:
+    name = "data/trans.{}.{}".format(args.dataset, nm)
+    obj = cPickle.load(open(fname))
+    objs.append(obj)
 
-x, y, tx, ty, graph = tuple(OBJECTS)
+x, y, tx, ty, graph = tuple(objs)
 
 # --
 # Define model
-
-args = parse_args()
 
 m = model(args)
 m.add_data(x, y, graph)                                 # add data
