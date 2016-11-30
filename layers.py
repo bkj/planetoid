@@ -11,9 +11,9 @@ class DenseLayer(lasagne.layers.Layer):
     def __init__(self, incoming, num_units, W = lasagne.init.GlorotUniform(),
                  b = lasagne.init.Constant(0.), nonlinearity = lasagne.nonlinearities.rectify,
                  **kwargs):
+        
         super(DenseLayer, self).__init__(incoming, **kwargs)
-        self.nonlinearity = (nonlinearities.identity if nonlinearity is None
-                             else nonlinearity)
+        self.nonlinearity = (nonlinearities.identity if nonlinearity is None else nonlinearity)
 
         self.num_units = num_units
 

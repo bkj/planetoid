@@ -47,8 +47,6 @@ x, y, tx, ty, graph = tuple(objs)
 # --
 # Define model
 
-print args
-
 m = model(args)
 m.add_data(x, y, graph)                                 # add data
 m.build()                                               # build the model

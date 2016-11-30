@@ -1,24 +1,28 @@
-from theano import sparse
-import theano.tensor as T
-import lasagne
-import layers
-import theano
-import numpy as np
+import copy
 import random
+import theano
+import lasagne
+import numpy as np
+
+import theano.tensor as T
+from theano.sparse import csr_matrix as icsr_matrix
 from collections import defaultdict as dd
 
+import layers
 from base_model import base_model
 
 class ind_model(base_model):
-    """Planetoid-I.
-    """
+    """ Planetoid-I """
 
     def add_data(self, x, y, allx, graph):
-        """add data to the model.
+        """
+        add data to the model.
+        
         x (scipy.sparse.csr_matrix): feature vectors for labeled training data.
         y (numpy.ndarray): one-hot label encoding for labeled training data.
         allx (scipy.sparse.csr_matrix): feature vectors for both labeled and unlabeled data.
         graph (dict): the format is {index: list_of_neighbor_index}. Only supports binary graph.
+        
         Let n be the number of training (both labeled and unlabeled) training instances.
         These n instances should be indexed from 1 to n - 1 in the graph with the same order in allx.
         """
@@ -26,23 +30,28 @@ class ind_model(base_model):
         self.num_ver = self.allx.shape[0]
 
     def build(self):
-        """build the model. This method should be called after self.add_data.
-        """
-        x_sym = sparse.csr_matrix('x', dtype = 'float32')
+        assert(self.x != None)
+        assert(self.y != None)
+        assert(self.graph != None)
+
+        x_sym = icsr_matrix('x', dtype = 'float32')
         self.x_sym = x_sym
-        y_sym = T.imatrix('y')
-        gx_sym = sparse.csr_matrix('gx', dtype = 'float32')
+        
+        y_sym  = T.imatrix('y')
+        gx_sym = icsr_matrix('gx', dtype = 'float32')
         gy_sym = T.ivector('gy')
         gz_sym = T.vector('gz')
 
-        l_x_in = lasagne.layers.InputLayer(shape = (None, self.x.shape[1]), input_var = x_sym)
+        l_x_in  = lasagne.layers.InputLayer(shape = (None, self.x.shape[1]), input_var = x_sym)
         l_gx_in = lasagne.layers.InputLayer(shape = (None, self.x.shape[1]), input_var = gx_sym)
         l_gy_in = lasagne.layers.InputLayer(shape = (None, ), input_var = gy_sym)
-
+        
         l_x_1 = layers.SparseLayer(l_x_in, self.y.shape[1], nonlinearity = lasagne.nonlinearities.softmax)
+        
         l_x_2 = layers.SparseLayer(l_x_in, self.embedding_size)
         W = l_x_2.W
         l_x_2 = layers.DenseLayer(l_x_2, self.y.shape[1], nonlinearity = lasagne.nonlinearities.softmax)
+        
         if self.use_feature:
             l_x = lasagne.layers.ConcatLayer([l_x_1, l_x_2], axis = 1)
             l_x = layers.DenseLayer(l_x, self.y.shape[1], nonlinearity = lasagne.nonlinearities.softmax)
@@ -51,10 +60,10 @@ class ind_model(base_model):
 
         l_gx = layers.SparseLayer(l_gx_in, self.embedding_size, W = W)
         if self.neg_samp > 0:
-            l_gy = lasagne.layers.EmbeddingLayer(l_gy_in, input_size = self.num_ver, output_size = self.embedding_size)
-            l_gx = lasagne.layers.ElemwiseMergeLayer([l_gx, l_gy], T.mul)
+            l_gy    = lasagne.layers.EmbeddingLayer(l_gy_in, input_size = self.num_ver, output_size = self.embedding_size)
+            l_gx    = lasagne.layers.ElemwiseMergeLayer([l_gx, l_gy], T.mul)
             pgy_sym = lasagne.layers.get_output(l_gx)
-            g_loss = - T.log(T.nnet.sigmoid(T.sum(pgy_sym, axis = 1) * gz_sym)).sum()
+            g_loss  = - T.log(T.nnet.sigmoid(T.sum(pgy_sym, axis = 1) * gz_sym)).sum()
         else:
             l_gx = lasagne.layers.DenseLayer(l_gx, self.num_ver, nonlinearity = lasagne.nonlinearities.softmax)
             pgy_sym = lasagne.layers.get_output(l_gx)
