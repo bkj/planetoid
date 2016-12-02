@@ -105,16 +105,18 @@ while True:
         iter_inst=config['step_train']['iter_inst'],
         iter_label=config['step_train']['iter_label'],
     )
-
+    
     # predict the dev set
     tpy = m.predict(tx)
-
+    
     # compute the accuracy on the dev set
     accu = comp_accu(tpy, ty)
-
-    print "step_train\t%d\t%f\t%f" % (iter_cnt, accu, max_accu)
+    
+    sys.stdout.write("\r step_train\t%d\t%f\t%f" % (iter_cnt, accu, max_accu))
+    sys.stdout.flush()
+    
     iter_cnt += 1
-
+    
     if accu > max_accu:
         # store the model if better result is obtained
         m.store_params()

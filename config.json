@@ -25,6 +25,7 @@
             "iter_label": 0
         }
     },
+    
     "inductive": {
         "learning_rate": 0.1,
         "embedding_size": 50,
