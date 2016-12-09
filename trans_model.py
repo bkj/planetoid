@@ -99,18 +99,16 @@ class trans_model(base_model):
                 # Embedding should be near label
                 loss += lasagne.objectives.categorical_crossentropy(lasagne_get_output(node_emb), y_).mean()
             
+            params = [node_emb.W, node_emb.b, hidden_x.W, hidden_x.b, hidden.W, hidden.b]
         else:
             # Dense softmax should be close to `y`
             hidden = node_emb
             loss = lasagne.objectives.categorical_crossentropy(lasagne_get_output(hidden), y_).mean()
-        
-        # !! I don't understand this bit
-        if self.use_feature:
-            params = [node_emb.W, node_emb.b, hidden_x.W, hidden_x.b, hidden.W, hidden.b]
-        elif self.update_emb:
-            params = lasagne_get_params(hidden)
-        else:
+            
             params = [hidden.W, hidden.b]
+          
+        if self.update_emb:
+            params = lasagne_get_params(hidden) # This gets _everything_
         
         updates       = lasagne.updates.sgd(loss, params, learning_rate=self.learning_rate)
         self.train_fn = theano.function([x_, y_, node_], loss, updates=updates, on_unused_input='ignore')
