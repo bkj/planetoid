@@ -15,7 +15,7 @@ from pprint import pprint
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', help='dataset', type=str, default='citeseer')
+    parser.add_argument('--dataset', help='dataset', type=str, default='cora')
     parser.add_argument('--inductive', help='inductive?', action="store_true")
     parser.add_argument('--config', help='path to config.json', type=str, default='config.json')
     

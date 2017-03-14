@@ -36,17 +36,7 @@ class base_model(object):
         self.inst_generator  = self.gen_train_inst()
         self.graph_generator = self.gen_graph()
         self.label_generator = self.gen_label_graph()
-
-    def store_params(self):
-        """serialize the model parameters in self.model_file.
-        """
-
-        for i, l in enumerate(self.l):
-            fout = open("{}.{}".format(self.model_file, i), 'w')
-            params = lasagne.layers.get_all_param_values(l)
-            cPickle.dump(params, fout, cPickle.HIGHEST_PROTOCOL)
-            fout.close()
-
+    
     def load_params(self):
         """load the model parameters from self.model_file.
         """
@@ -63,14 +53,4 @@ class base_model(object):
         if iter >= 1:
             return iter
         return 1 if random.random() < iter else 0
-
-    def train(self, init_iter_label, init_iter_graph, max_iter, iter_graph, iter_inst, iter_label):
-        """training API.
-        This method is a wrapper for init_train and step_train.
-        Refer to init_train and step_train for more details (Cf. trans_model.py and ind_model.py).
-        """
-        self.init_train(init_iter_label, init_iter_graph)
-        self.step_train(max_iter, iter_graph, iter_inst, iter_label)
-
-
 
